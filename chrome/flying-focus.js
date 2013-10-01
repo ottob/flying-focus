@@ -26,7 +26,15 @@ var prevFocused = null;
 var isFirstFocus = true;
 var keyDownTime = 0;
 
-document.documentElement.addEventListener('keydown', function(event) {
+function bindEvent(el, eventName, eventHandler, useCapture) {
+	if (el.addEventListener){
+		el.addEventListener(eventName, eventHandler, useCapture); 
+	} else if (el.attachEvent){
+		el.attachEvent('on'+eventName, eventHandler);
+	}
+}
+
+bindEvent(document.documentElement, 'keydown', function(event) {
 	var code = event.which;
 	// Show animation only upon Tab or Arrow keys press.
 	if (code === 9 || (code > 36 && code < 41)) {
@@ -34,7 +42,7 @@ document.documentElement.addEventListener('keydown', function(event) {
 	}
 }, false);
 
-document.documentElement.addEventListener('focus', function(event) {
+bindEvent(document.documentElement, 'focus', function(event) {
 	var target = event.target;
 	if (target.id === 'flying-focus') {
 		return;
@@ -67,7 +75,7 @@ document.documentElement.addEventListener('focus', function(event) {
 	movingId = setTimeout(onEnd, DURATION);
 }, true);
 
-document.documentElement.addEventListener('blur', function() {
+bindEvent(document.documentElement, 'blur', function() {
 	onEnd();
 }, true);
 
